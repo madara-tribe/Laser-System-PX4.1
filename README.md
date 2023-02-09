@@ -1,14 +1,16 @@
 # Laser tracking System with object detection Prototype
 
-It has Minimum functionality for tracking laser sysytem. this is first prototype as low-end model.
-
 # abstract
+It has Minimum functionality for tracking laser sysytem. This is first prototype as low-end model.
+
+Its system include object detection(yolov7), PWM control, 2 servo moter, handmade laser and so on.
+
+<b>Parts</b>
 - Jetson nano
 - Adafruit PCA9685 PWM controler
 - 2 Serbo motor 
 - handmade laser pointer
 - CSI camera
-
 
 
 ## version
