@@ -25,8 +25,6 @@ cpu
 ## overall
 <img src="https://user-images.githubusercontent.com/48679574/217874634-fa31091c-6249-4292-a78b-f9941e1fd80e.png" width="500" height="350"/>
 
-<img width="1068" alt="スクリーンショット 2023-02-10 1 23 05" src="">
-
 
 # How it work
 
