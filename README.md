@@ -12,3 +12,5 @@
 
 <img src="https://user-images.githubusercontent.com/48679574/217854150-becb5933-0887-425e-b090-2a8402d5c0c4.gif" width="500" height="400"/>
 
+# References
+・[Laser_control](https://github.com/Ildaron/Laser_control)
