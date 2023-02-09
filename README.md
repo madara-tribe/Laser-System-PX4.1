@@ -1,11 +1,25 @@
 # Laser tracking System with object detection Prototype
 
+It has Minimum functionality for tracking laser sysytem that is first prototype as low-end model.
+
 # abstract
+- Jetson nano
+- Adafruit PCA9685 PWM controler
+- 2 Serbo motor 
+- handmade laser pointer
+- CSI camera
+
+
 
 ## version
 ```zsh
-
-``
+Jetson Nano
+JetPack 4.6.0
+pytorch 1.10.0
+torchvision 0.11
+onnx 1.11.0
+cpu 
+```
 
 ## overall
 
