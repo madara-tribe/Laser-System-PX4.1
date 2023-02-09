@@ -1,6 +1,6 @@
 # Laser tracking System with object detection Prototype
 
-It has Minimum functionality for tracking laser sysytem that is first prototype as low-end model.
+It has Minimum functionality for tracking laser sysytem. this is first prototype as low-end model.
 
 # abstract
 - Jetson nano
