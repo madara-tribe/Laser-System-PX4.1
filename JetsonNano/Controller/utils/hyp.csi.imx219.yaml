@@ -1,0 +1,12 @@
+capture_width: 1080
+capture_height: 720
+display_width: 1080
+display_height: 720
+framerate: 30
+flip_method: 0
+width_cannel: 15
+height_cannel: 14
+width_angle_max: 100
+width_angle_min: 80
+height_angle_max: 120
+height_angle_min: 105
