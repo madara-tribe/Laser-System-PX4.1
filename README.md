@@ -1,4 +1,4 @@
-# Laser tracking System with object detection Prototype
+# Laser tracking System with object detection (Prototype)
 
 # abstract
 It has Minimum functionality for tracking laser sysytem. This is first prototype as low-end model.
