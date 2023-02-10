@@ -156,11 +156,13 @@ def run_cameras(opt, hyp):
     #right_camera.start()
     
     Wmax, Wmin, Hmax, Hmin, DWidth = const_hyparameters(hyp)
+    CHANNELS = [hyp['width_cannel'], hyp['height_cannel']]
+    
     RdegX, RdegY = int((Wmax+Wmin)/2), int((Hmax+Hmin)/2)
     Controller = ServoController()
-    CHANNELS = [hyp['width_cannel'], hyp['height_cannel']]
     Controller.initialize(CHANNELS[0], RdegX)
     Controller.initialize(CHANNELS[1], RdegY)
+    
     time.sleep(2)
     if left_camera.video_capture.isOpened(): #and right_camera.video_capture.isOpened():
         cv2.namedWindow(window_title, cv2.WINDOW_AUTOSIZE)
