@@ -128,15 +128,19 @@ def gstreamer_pipeline(sensor_id, hyp):
         )
     )
 
-def run_cameras(opt, hyp):
-    window_title = "Dual CSI Cameras"
-    session, new_shape = onnx_setup(opt)
-    disparity = None
+def const_hyparameters(hyp):
     Wmax = hyp['width_angle_max']
     Wmin = hyp['width_angle_min']
     Hmax = hyp['height_angle_max']
     Hmin = hyp['height_angle_min']
     DWidth = hyp['display_width']
+    return Wmax, Wmin, Hmax, Hmin, DWidth
+    
+def run_cameras(opt, hyp):
+    window_title = "Dual CSI Cameras"
+    session, new_shape = onnx_setup(opt)
+    disparity = None
+    
     left_camera = CSI_Camera()
     left_camera.open(
         gstreamer_pipeline(
@@ -150,15 +154,15 @@ def run_cameras(opt, hyp):
     #        sensor_id=1, hyp=hyp)
     #)
     #right_camera.start()
+    
+    Wmax, Wmin, Hmax, Hmin, DWidth = const_hyparameters(hyp)
     RdegX, RdegY = int((Wmax+Wmin)/2), int((Hmax+Hmin)/2)
-    plotpos = 90
     Controller = ServoController()
     CHANNELS = [hyp['width_cannel'], hyp['height_cannel']]
     Controller.initialize(CHANNELS[0], RdegX)
     Controller.initialize(CHANNELS[1], RdegY)
     time.sleep(2)
     if left_camera.video_capture.isOpened(): #and right_camera.video_capture.isOpened():
-
         cv2.namedWindow(window_title, cv2.WINDOW_AUTOSIZE)
         Ls = []
         try:
@@ -171,7 +175,7 @@ def run_cameras(opt, hyp):
                     camera_images = Routput[0] 
                     if disparity is None:
                         #Loutput, Lx, Ly, Lrange = inference_(Rs[-1], session, new_shape, conf_thres)
-                    #if abs(Rx-Lx) >=0 or Lx < Rrange or Rx < Lrange:
+                        #if abs(Rx-Lx) >=0 or Lx < Rrange or Rx < Lrange:
                         #disp = abs(Rx-Lx)
                         disparity = 25 #disp if disp <= max_disp and disp > min_disp else None
                     else:
@@ -191,9 +195,8 @@ def run_cameras(opt, hyp):
                             print("RdegY", RdegY)
 
                     for i in range(0, DWidth, 30):
-                        cv2.putText(camera_images, str(int(i/(DWidth/180))), (i, plotpos), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255, 255, 255), thickness=1)
+                        cv2.putText(camera_images, str(int(i/(DWidth/180))), (i, 90), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255, 255, 255), thickness=1)
                     cv2.imshow(window_title, camera_images)
-                    #print(camera_images.shape)
                     Ls = []
                     keyCode = cv2.waitKey(30) & 0xFF
                     if keyCode == 27:
