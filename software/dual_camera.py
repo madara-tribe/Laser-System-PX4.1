@@ -29,6 +29,11 @@ class DualCamera(object):
         self.count = 0
         self.conf_thres = opt.conf_thres
         self.Rstack = self.Lstack = []
+        self.distance = self.disparity = 0
+        self.realX = self.realY = 0
+        self.real_x_angle = self.real_y_angle = 0
+        self.max_disparity = opt.max_disparity
+        self.min_disparity = opt.min_disparity
         self.left_camera = create_csicams(hyp, sensor_id=0)
         self.right_camera = create_csicams(hyp, sensor_id=1)
         self.init_onnx_model(opt)
@@ -71,19 +76,28 @@ class DualCamera(object):
                         continue
                     self.count += 0.01
                     if (time.time() - self.count) > self.TIMEOUT:
-                        print(frameR.shape)
+                        start = time.time()
+                        #print(frameR.shape)
                         frameR_, Rx, Ry = self.qt_onnx_inference(frameR)
                         frameL_, Lx, Ly = self.qt_onnx_inference(frameL)
-                        print(frameR_.shape)
-                        fR = cv2.resize(frameR_, (960, 540))
-                        fL = cv2.resize(frameL_, (960, 540))
-                        camera_images = np.hstack((fR, fL)) 
+                        #print(frameR_.shape)
+                        if Rx >0 and Lx > 0:
+                            hlen, wlen = frameR.shape[:2]
+                            disparity = abs(Rx-Lx)
+                            print('disparity', disparity, wlen, hlen)
+                            if disparity <= self.max_disparity and disparity > self.min_disparity:
+                                self.disparity, self.distance, self.realX, self.realY = prams_calcurator(self.hyp, disparity,
+                                wlen, cx=int(wlen/2), cy=int(hlen/2), x=int((Rx+Lx)/2), y=int((Ry+Ly)/2))
+                        self.real_x_angle, self.real_y_angle = angle_convert(self.realX, self.realY, self.distance)
                         self.frame_reset()
                         if opt.plot:
+                            camera_images = np.hstack((cv2.resize(frameR_, (960, 540)), cv2.resize(frameL_, (960, 540))))
                             cv2.imshow(window_title, camera_images)
                         elif opt.dual:
                             break
                         # This also acts as
+                        pred_time = np.round((time.time() - start), decimals=5)
+                        print('pred_time is ', pred_time)
                         keyCode = cv2.waitKey(30) & 0xFF
                         # Stop the program on the ESC key
                         if keyCode == 27:
