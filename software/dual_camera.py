@@ -1,4 +1,3 @@
-import sys
 import cv2
 import numpy as np
 import time
@@ -86,10 +85,11 @@ class DualCamera(object):
                             disparity = abs(Rx-Lx)
                             print('disparity', disparity, wlen, hlen)
                             if disparity <= self.max_disparity and disparity > self.min_disparity:
-                                self.disparity, self.distance, self.realX, self.realY = prams_calcurator(self.hyp, disparity,
+                                self.disparity, self.distance, self.realX, self.realY = prams_calcurator(hyp, disparity,
                                 wlen, cx=int(wlen/2), cy=int(hlen/2), x=int((Rx+Lx)/2), y=int((Ry+Ly)/2))
                         self.real_x_angle, self.real_y_angle = angle_convert(self.realX, self.realY, self.distance)
                         self.frame_reset()
+                        print("x angle, yangle, disparity, distance", self.real_x_angle, self.real_y_angle, self.disparity, self.distance)
                         if opt.plot:
                             camera_images = np.hstack((cv2.resize(frameR_, (960, 540)), cv2.resize(frameL_, (960, 540))))
                             cv2.imshow(window_title, camera_images)
