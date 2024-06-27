@@ -1,5 +1,0 @@
-torch=1.7.1
-torchvision=0.8.0
-onnxruntime=1.12.0
-#oprncv-python>=4.6.0
-
