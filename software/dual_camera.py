@@ -2,8 +2,12 @@ import sys
 import cv2
 import numpy as np
 import time
+import onnxruntime
+from yolov7s.common import letterbox, preprocess, onnx_inference, post_process
+from yolov7s.dist_calcurator import prams_calcurator, angle_convert
 from .csicam_pipeline import CSI_Camera, gstreamer_pipeline
-    
+cuda = False
+
 def create_csicams(hyp, sensor_id):
     csi_camera = CSI_Camera()
     csi_camera.open(
@@ -26,7 +30,23 @@ class DualCamera(object):
         self.Rstack = self.Lstack = []
         self.left_camera = create_csicams(hyp, sensor_id=0)
         self.right_camera = create_csicams(hyp, sensor_id=1)
+        self.init_onnx_model()
         self.run_dual_cam(opt, hyp)
+
+    def init_onnx_model(self):
+        providers = ['CUDAExecutionProvider', 'CPUExecutionProvider'] if cuda else ['CPUExecutionProvider']
+        self.session = onnxruntime.InferenceSession(self.opt.onnx_path, providers=providers)
+        IN_IMAGE_H = self.session.get_inputs()[0].shape[2]
+        IN_IMAGE_W = self.session.get_inputs()[0].shape[3]
+        self.new_shape = (IN_IMAGE_W, IN_IMAGE_H)
+    
+    def qt_onnx_inference(self, frame):
+        ori_images = [frame.copy()]
+        resized_image, ratio, dwdh = letterbox(frame, new_shape=self.new_shape, auto=False)
+        input_tensor = preprocess(resized_image)
+        outputs = onnx_inference(self.session, input_tensor)
+        pred_output, coordinate_x, coordinate_y = post_process(outputs, ori_images, ratio, dwdh, self.conf_thres)
+        return pred_output[0], coordinate_x, coordinate_y
 
     def frame_reset(self):
         self.Rstack = []
@@ -48,11 +68,11 @@ class DualCamera(object):
                     _, frameL = self.left_camera.read()
                     if frameL is None or frameR is None:
                         continue
-                    # Use numpy to place images next to each other
-                    camera_images = np.hstack((frameR, frameL)) 
                     self.count += 0.01
                     if (time.time() - self.count) > self.TIMEOUT:
-                    #if cv2.getWindowProperty(window_title, cv2.WND_PROP_AUTOSIZE) >= 0:
+                        #frameR_, Rx, Ry = self.qt_onnx_inference(frameR)
+                        #frameL_, Lx, Ly = self.qt_onnx_inference(frameL)
+                        camera_images = np.hstack((frameR, frameL)) 
                         self.frame_reset()
                         if opt.plot:
                             cv2.imshow(window_title, camera_images)
