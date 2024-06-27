@@ -27,15 +27,16 @@ class DualCamera(object):
     def __init__(self, opt, hyp):
         self.TIMEOUT = opt.frame_interval
         self.count = 0
+        self.conf_thres = opt.conf_thres
         self.Rstack = self.Lstack = []
         self.left_camera = create_csicams(hyp, sensor_id=0)
         self.right_camera = create_csicams(hyp, sensor_id=1)
-        self.init_onnx_model()
+        self.init_onnx_model(opt)
         self.run_dual_cam(opt, hyp)
 
-    def init_onnx_model(self):
+    def init_onnx_model(self, opt):
         providers = ['CUDAExecutionProvider', 'CPUExecutionProvider'] if cuda else ['CPUExecutionProvider']
-        self.session = onnxruntime.InferenceSession(self.opt.onnx_path, providers=providers)
+        self.session = onnxruntime.InferenceSession(opt.onnx_path, providers=providers)
         IN_IMAGE_H = self.session.get_inputs()[0].shape[2]
         IN_IMAGE_W = self.session.get_inputs()[0].shape[3]
         self.new_shape = (IN_IMAGE_W, IN_IMAGE_H)
@@ -70,9 +71,13 @@ class DualCamera(object):
                         continue
                     self.count += 0.01
                     if (time.time() - self.count) > self.TIMEOUT:
-                        #frameR_, Rx, Ry = self.qt_onnx_inference(frameR)
-                        #frameL_, Lx, Ly = self.qt_onnx_inference(frameL)
-                        camera_images = np.hstack((frameR, frameL)) 
+                        print(frameR.shape)
+                        frameR_, Rx, Ry = self.qt_onnx_inference(frameR)
+                        frameL_, Lx, Ly = self.qt_onnx_inference(frameL)
+                        print(frameR_.shape)
+                        fR = cv2.resize(frameR_, (960, 540))
+                        fL = cv2.resize(frameL_, (960, 540))
+                        camera_images = np.hstack((fR, fL)) 
                         self.frame_reset()
                         if opt.plot:
                             cv2.imshow(window_title, camera_images)

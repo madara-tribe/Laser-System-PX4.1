@@ -2,7 +2,7 @@ import cv2
 import random
 import numpy as np
 
-TARGET_CANDIDATE_CLS = ['clock', 'cell phone', 'tv', 'remote', 'cup']
+TARGET_CANDIDATE_CLS = ['clock'] # 'cell phone', 'tv', 'remote', 'cup']
 
 names = ['person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat', 'traffic light',
          'fire hydrant', 'stop sign', 'parking meter', 'bench', 'bird', 'cat', 'dog', 'horse', 'sheep', 'cow',
@@ -76,7 +76,8 @@ def post_process(outputs, ori_images, ratio, dwdh, conf_thres):
             continue
         color = colors[name]
         name += ' '+str(score)
-        cv2.rectangle(image, box[:2], box[2:], color, 2)
+        #print(int(box[0]), box[1], box[:2], int(box[2]), box[3], box[2:])
+        cv2.rectangle(image, (box[0], box[1]), (box[2], box[3]), color, 2)
         cv2.putText(image, name, (box[0], box[1] - 2),cv2.FONT_HERSHEY_SIMPLEX,0.75,[225, 255, 255],thickness=2)
         coordinateX += (box[2:][0]+box[:2][0])/2 # w+x/2
         coordinateY += (box[2:][1]+box[:2][1])/2 # h+y/2
