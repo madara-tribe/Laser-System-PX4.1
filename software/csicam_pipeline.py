@@ -1,11 +1,8 @@
-import sys
 import cv2
-import time
 import threading
-import numpy as np
-from .utils.tools import cv2_video_writer
 
 class CSI_Camera:
+
     def __init__(self):
         # Initialize instance variables
         # OpenCV video capture element
@@ -17,7 +14,7 @@ class CSI_Camera:
         self.read_thread = None
         self.read_lock = threading.Lock()
         self.running = False
-        
+
     def open(self, gstreamer_pipeline_string):
         try:
             self.video_capture = cv2.VideoCapture(
@@ -85,7 +82,15 @@ Default 1920x1080
 """
 
 
-def gstreamer_pipeline(sensor_id, hyp):
+def gstreamer_pipeline(
+    sensor_id=0,
+    capture_width=1920,
+    capture_height=1080,
+    display_width=1920,
+    display_height=1080,
+    framerate=30,
+    flip_method=0,
+):
     return (
         "nvarguscamerasrc sensor-id=%d ! "
         "video/x-raw(memory:NVMM), width=(int)%d, height=(int)%d, framerate=(fraction)%d/1 ! "
@@ -95,73 +100,11 @@ def gstreamer_pipeline(sensor_id, hyp):
         "video/x-raw, format=(string)BGR ! appsink"
         % (
             sensor_id,
-            hyp['capture_width'],
-            hyp['capture_height'],
-            hyp['framerate'],
-            hyp['flip_method'],
-            hyp['display_width'],
-            hyp['display_height'],
+            capture_width,
+            capture_height,
+            framerate,
+            flip_method,
+            display_width,
+            display_height,
         )
     )
-
-
-def run_cameras(hyp):
-    window_title = "Dual CSI Cameras"
-    W=1280
-    H=720
-    rvid = cv2_video_writer(w=W, h=H, filename='right.mp4')
-    lvid = cv2_video_writer(w=W, h=H, filename='left.mp4')
-    
-    left_camera = CSI_Camera()
-    left_camera.open(
-        gstreamer_pipeline(
-            sensor_id=0, hyp=hyp)
-    )
-    left_camera.start()
-
-    right_camera = CSI_Camera()
-    right_camera.open(
-        gstreamer_pipeline(
-            sensor_id=1, hyp=hyp)
-    )
-    right_camera.start()
-    
-    if left_camera.video_capture.isOpened() and right_camera.video_capture.isOpened():
-
-        cv2.namedWindow(window_title, cv2.WINDOW_AUTOSIZE)
-
-        try:
-            while True:
-                _, left_image = left_camera.read()
-                _, right_image = right_camera.read()
-                # Use numpy to place images next to each other
-                camera_images = np.hstack((left_image, right_image)) 
-                # Check to see if the user closed the window
-                # Under GTK+ (Jetson Default), WND_PROP_VISIBLE does not work correctly. Under Qt it does
-                # GTK - Substitute WND_PROP_AUTOSIZE to detect if window has been closed by user
-                if cv2.getWindowProperty(window_title, cv2.WND_PROP_AUTOSIZE) >= 0:
-                    print("movie saving now")
-                    limg = cv2.resize(left_image, (W, H))
-                    lvid.write(limg.astype(np.uint8))
-                    rimg = cv2.resize(right_image, (W, H))
-                    rvid.write(rimg.astype(np.uint8))
-                else:
-                    break
-
-                # This also acts as
-                keyCode = cv2.waitKey(30) & 0xFF
-                # Stop the program on the ESC key
-                if keyCode == 27:
-                    break
-        finally:
-            left_camera.stop()
-            left_camera.release()
-            right_camera.stop()
-            right_camera.release()
-        cv2.destroyAllWindows()
-    else:
-        print("Error: Unable to open both cameras")
-        left_camera.stop()
-        left_camera.release()
-        right_camera.stop()
-        right_camera.release()
