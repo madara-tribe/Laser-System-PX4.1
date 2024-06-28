@@ -19,10 +19,10 @@ def distance_formula(disparity, fpx, hyp):
     return dist
     
 def prams_calcurator(hyp, disparity, width, cx, cy, x, y):
-    fpx = forcal_lenth_px = (hyp['FOCAL_LENTH'] * width)/hyp['W_PIXEL_LENTH'] # [px]
-    print('fpxxxxxx, ', fpx, width)
-    distance = distance_formula(disparity, fpx, hyp)
-    real_x, real_y = real_cordinate(cx, cy, x, y, fpx, distance)
+    focal_px = (hyp['FOCAL_LENTH'] * width)/hyp['W_PIXEL_LENTH'] # [px]
+    #print('fpxxxxxx, ', focal_px, width)
+    distance = distance_formula(disparity, focal_px, hyp)
+    real_x, real_y = real_cordinate(cx, cy, x, y, focal_px, distance)
     return disparity, np.round(distance, decimals=2), np.round(real_x, decimals=2), np.round(real_y, decimals=2)
  
 

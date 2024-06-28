@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import time
 import onnxruntime
+from multiprocessing import Queue
 from yolov7s.common import letterbox, preprocess, onnx_inference, post_process
 from yolov7s.dist_calcurator import prams_calcurator, angle_convert
 from .csicam_pipeline import CSI_Camera, gstreamer_pipeline
@@ -23,7 +24,8 @@ def create_csicams(hyp, sensor_id):
 
 
 class DualCamera(object):
-    def __init__(self, opt, hyp):
+    def __init__(self, q:Queue, opt, hyp):
+        self.q = q
         self.TIMEOUT = opt.frame_interval
         self.count = 0
         self.conf_thres = opt.conf_thres
@@ -90,11 +92,12 @@ class DualCamera(object):
                         self.real_x_angle, self.real_y_angle = angle_convert(self.realX, self.realY, self.distance)
                         self.frame_reset()
                         print("x angle, yangle, disparity, distance", self.real_x_angle, self.real_y_angle, self.disparity, self.distance)
-                        if opt.plot:
+                        if opt.software_test:
                             camera_images = np.hstack((cv2.resize(frameR_, (960, 540)), cv2.resize(frameL_, (960, 540))))
                             cv2.imshow(window_title, camera_images)
-                        elif opt.dual:
-                            break
+                        elif opt.pwm:
+                            menssage = [self.real_x_angle, self.real_y_angle]
+                            self.q.put(menssage)
                         # This also acts as
                         pred_time = np.round((time.time() - start), decimals=5)
                         print('pred_time is ', pred_time)
