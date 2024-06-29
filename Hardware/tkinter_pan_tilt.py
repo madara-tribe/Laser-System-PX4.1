@@ -28,7 +28,7 @@ class App:
     def update_xais_tilt(self, angle):
         duty = int( float(angle) * 2.17 + 102)
         # reverse
-        duty = 594 - duty
+        #3333333333333333333333duty = 594 - duty
         print('xaxis angle is', f' {angle}' 'duty is' f' {duty}')
         pwm.set_pwm(self.xaxis_pin, 0, duty)
         time.sleep(0.1)
