@@ -4,11 +4,11 @@
 It is automaticallay laser tracking sysytem using AI model. 
 
 Mainly It consist of ：
-・yolov7 (object detection)
-・Stereo Vision(Depth calurate)
-・Hardware PWM component
-・2 servo moter
-・handmade laser and so on
+- yolov7 (object detection)
+- Stereo Vision(Depth calurate)
+- Hardware PWM component
+- 2 servo moter
+- handmade laser and so on
 
 This is first prototype as low-end model.
 Previous version Px4.0 
