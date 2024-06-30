@@ -47,6 +47,6 @@ $ python3 main.py --pwm
 
 
 ## main improvement point
-・Hardware power poverty (jetson nano)
-・camera StereoVison accuracy 
-・Low-Speed PWM communication
+- Hardware power poverty (jetson nano)
+- camera StereoVison accuracy 
+- Low-Speed PWM communication
