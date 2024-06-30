@@ -28,6 +28,8 @@ class DualCamera(object):
         self.q = q
         self.TIMEOUT = opt.frame_interval
         self.count = 0
+        self.def_x = opt.x_coord
+        self.def_y = opt.y_coord
         self.conf_thres = opt.conf_thres
         self.Rstack = self.Lstack = []
         self.distance = self.disparity = 0
@@ -75,37 +77,39 @@ class DualCamera(object):
                     _, frameL = self.left_camera.read()
                     if frameL is None or frameR is None:
                         continue
-                    self.count += 0.01
-                    if (time.time() - self.count) > self.TIMEOUT:
-                        start = time.time()
-                        print(frameR.shape)
-                        frameR_, Rx, Ry = self.qt_onnx_inference(frameR)
-                        frameL_, Lx, Ly = self.qt_onnx_inference(frameL)
-                        print(frameR_.shape)
-                        if Rx >0 and Lx > 0:
-                            hlen, wlen = frameR.shape[:2]
-                            disparity = abs(Rx-Lx)
-                            print('disparity', disparity, wlen, hlen)
-                            if disparity <= self.max_disparity and disparity > self.min_disparity:
-                                self.disparity, self.distance, self.realX, self.realY = prams_calcurator(hyp, disparity,
-                                wlen, cx=int(wlen/2), cy=int(hlen/2), x=int((Rx+Lx)/2), y=int((Ry+Ly)/2))
-                        self.real_x_angle, self.real_y_angle = angle_convert(self.realX, self.realY, self.distance)
-                        self.frame_reset()
-                        print("x angle, yangle, disparity, distance", self.real_x_angle, self.real_y_angle, self.disparity, self.distance)
-                        if opt.software_test:
-                            camera_images = np.hstack((cv2.resize(frameR_, (960, 540)), cv2.resize(frameL_, (960, 540))))
-                            cv2.imshow(window_title, camera_images)
-                        elif opt.pwm:
-                            self.q.put(['x', self.real_x_angle])
-                            if abs(self.real_y_angle) > 5:
-                                self.q.put(['y', self.real_y_angle])
-                        # This also acts as
-                        pred_time = np.round((time.time() - start), decimals=5)
-                        print('pred_time is ', pred_time)
-                        keyCode = cv2.waitKey(30) & 0xFF
-                        # Stop the program on the ESC key
-                        if keyCode == 27:
-                            break
+                    #self.count += 0.05
+                    #if (time.time() - self.count) > self.TIMEOUT:
+                    start = time.time()
+                        # print(frameR.shape)
+                    frameR_, Rx, Ry = self.qt_onnx_inference(frameR)
+                    frameL_, Lx, Ly = self.qt_onnx_inference(frameL)
+                    # print(frameR_.shape)
+                    if Rx >0 and Lx > 0:
+                        hlen, wlen = frameR.shape[:2]
+                        disparity = abs(Rx-Lx)
+                        print('disparity', disparity, wlen, hlen)
+                        if disparity <= self.max_disparity and disparity > self.min_disparity:
+                            self.disparity, self.distance, self.realX, self.realY = prams_calcurator(hyp, disparity,
+                            wlen, cx=self.def_y, cy=self.def_y, x=int((Rx+Lx)/2), y=int((Ry+Ly)/2))
+                    self.real_x_angle, self.real_y_angle = angle_convert(self.realX, self.realY, self.distance)
+                    print("x angle, yangle, disparity, distance", int((Rx+Lx)/2), int((Ry+Ly)/2), self.real_x_angle, self.real_y_angle, self.disparity, self.distance)
+                    xang, yang = self.real_x_angle, self.real_y_angle
+                    if opt.software_test:
+                        camera_images = np.hstack((cv2.resize(frameR_, (960, 540)), cv2.resize(frameL_, (960, 540))))
+                        cv2.imshow(window_title, camera_images)
+                    elif opt.pwm:
+                        if isinstance(xang, float):
+                            self.q.put(['x', xang])
+                        if isinstance(xang, float):
+                            self.q.put(['y', yang])
+                    # This also acts as
+                    pred_time = np.round((time.time() - start), decimals=5)
+                    print('pred_time is ', pred_time)
+                    # self.frame_reset()
+                    keyCode = cv2.waitKey(30) & 0xFF
+                    # Stop the program on the ESC key
+                    if keyCode == 27:
+                        break
             finally:        
                 self.left_camera.stop()
                 self.left_camera.release()

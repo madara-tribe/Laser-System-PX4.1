@@ -37,9 +37,11 @@ def hw_thread(q:Queue, opt):
             if axis=='x':
                 duty = x_angle2duty(angle)
                 pwm.set_pwm(xaxis_pin, 0, duty)
+                #time.sleep(0.1)
             elif axis=='y':
                 duty = y_angle2duty(angle)
                 pwm.set_pwm(yaxis_pin, 0, duty)
+                #time.sleep(0.1)
     finally:
         pwm.set_pwm(xaxis_pin, 0, x_defalut)
         time.sleep(1)
