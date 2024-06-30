@@ -14,11 +14,14 @@ This is first prototype as low-end model.
 Previous version [PX4.0](https://github.com/madara-tribe/Laser-System-PX4.1/tree/px4.0) 
 
 <b>Parts</b>
+```zsh
 - Jetson nano
 - Adafruit PCA9685 PWM controler
 - 2 Serbo motor 
 - handmade laser pointer
 - CSI camera
+```
+
 
 ## version
 ```zsh
