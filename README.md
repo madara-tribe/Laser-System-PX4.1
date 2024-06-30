@@ -1,9 +1,17 @@
 # Laser tracking System with object detection  (Prototype)
 
 # abstract
-It has Minimum functionality for tracking laser sysytem. This is first prototype as low-end model.
+It is automaticallay laser tracking sysytem using AI model. 
 
-Its system include object detection(yolov7), PWM control, 2 servo moter, handmade laser and so on.
+Mainly It consist of ：
+・　yolov7 (object detection)
+：Stereo Vision(Depth calurate)
+：Hardware PWM component
+・2 servo moter
+・handmade laser and so on
+
+This is first prototype as low-end model.
+Previous version Px4.0 
 
 <b>Parts</b>
 - Jetson nano
@@ -11,7 +19,6 @@ Its system include object detection(yolov7), PWM control, 2 servo moter, handmad
 - 2 Serbo motor 
 - handmade laser pointer
 - CSI camera
-
 
 ## version
 ```zsh
@@ -23,20 +30,23 @@ onnx 1.11.0
 cpu 
 ```
 
-
-## overall
-<img src="https://user-images.githubusercontent.com/48679574/217874634-fa31091c-6249-4292-a78b-f9941e1fd80e.png" width="500" height="350"/>
-
-
 # How it work
+```zsh
 
-## hardware (laser itself)
+# software calibrate
+$ python3 main.py -st
 
-<img src="https://user-images.githubusercontent.com/48679574/217854214-5da2563d-dd53-4ec9-9cc8-04690d55e8de.gif" width="300" height="500"/>
+# hard ware calibrate
+$ python3 main.py -ht
 
-## Software (laser controller)
+# take laser tracking system
+$ python3 main.py --pwm
+```
 
-<img src="https://user-images.githubusercontent.com/48679574/217854150-becb5933-0887-425e-b090-2a8402d5c0c4.gif" width="500" height="400"/>
+# Result
 
-# References
-・[Laser_control](https://github.com/Ildaron/Laser_control)
+
+## main improvement point
+・Hardware power poverty (jetson nano)
+・camera StereoVison accuracy 
+・Low-Speed PWM communication
