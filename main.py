@@ -20,6 +20,9 @@ def get_parser():
     parser.add_argument('-ht', '--hard_test', action='store_true', help='hardware calibrate')
     parser.add_argument('--y_defalut', type=int, default=161, help='y default angle')
     parser.add_argument('--x_defalut', type=int, default=58, help='x default angle')
+    parser.add_argument('--xaxis_pin', type=int, default=15, help='x pin number')
+    parser.add_argument('--yaxis_pin', type=int, default=14, help='y pin number')
+    parser.add_argument('--pwm_freq', type=int, default=60, help='pwm frequency')
     opt = parser.parse_args()
     return opt
  
@@ -38,7 +41,7 @@ def hardware_threads(q):
         from Hardware.tkinter_pan_tilt import App
         root = Tk()
         root.wm_title('Servo Control')
-        app = App(root)
+        app = App(root, opt)
         root.geometry("220x120+0+0")
         root.mainloop()
     elif opt.pwm:

@@ -1,15 +1,13 @@
 import time
 import Adafruit_PCA9685
-
 from tkinter import Frame, Scale, HORIZONTAL, VERTICAL
 
-pwm = Adafruit_PCA9685.PCA9685()
-pwm.set_pwm_freq(60)
-
 class App:
-    def __init__(self, master):
-        self.yaxis_pin = 14
-        self.xaxis_pin = 15
+    def __init__(self, master, opt):
+        self.yaxis_pin = opt.yaxis_pin
+        self.xaxis_pin = opt.xaxis_pin
+        self.pwm = Adafruit_PCA9685.PCA9685()
+        self.pwm.set_pwm_freq(opt.pwm_freq)
         frame = Frame(master)
         frame.pack()
         scale_pan = Scale(frame, label="yangle", from_=0, to=180, tickinterval=90, orient=HORIZONTAL, command=self.update_yaxis_pan)
@@ -22,15 +20,15 @@ class App:
     def update_yaxis_pan(self, angle):
         duty = int( float(angle) * 2.17 + 102 )
         print('y-axis, angle is', f' {angle}' 'duty is' f' {duty}')
-        pwm.set_pwm(self.yaxis_pin, 0, duty)
+        self.pwm.set_pwm(self.yaxis_pin, 0, duty)
         time.sleep(0.1)
 
     def update_xais_tilt(self, angle):
         duty = int( float(angle) * 2.17 + 102)
         # reverse
-        #3333333333333333333333duty = 594 - duty
+        # duty = 594 - duty
         print('xaxis angle is', f' {angle}' 'duty is' f' {duty}')
-        pwm.set_pwm(self.xaxis_pin, 0, duty)
+        self.pwm.set_pwm(self.xaxis_pin, 0, duty)
         time.sleep(0.1)
 
 # root = Tk()

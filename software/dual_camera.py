@@ -96,8 +96,9 @@ class DualCamera(object):
                             camera_images = np.hstack((cv2.resize(frameR_, (960, 540)), cv2.resize(frameL_, (960, 540))))
                             cv2.imshow(window_title, camera_images)
                         elif opt.pwm:
-                            menssage = [self.real_x_angle, self.real_y_angle]
-                            self.q.put(menssage)
+                            self.q.put(['x', self.real_x_angle])
+                            if self.real_y_angle > 5:
+                                self.q.put(['y', self.real_y_angle])
                         # This also acts as
                         pred_time = np.round((time.time() - start), decimals=5)
                         print('pred_time is ', pred_time)
