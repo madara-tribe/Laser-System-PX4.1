@@ -1,4 +1,4 @@
-# Laser tracking System with object detection  (Prototype)
+# Laser tracking System (Version 4.1)
 
 # abstract
 It is automaticallay laser tracking sysytem using AI model. 
@@ -48,7 +48,9 @@ $ python3 main.py --pwm
 
 # Result
 
+<b>YOUTUBE MOVIE LINK</b>
 
+[![PX4.1 X-AXIS](https://github.com/madara-tribe/HW-Jetson-PWM-PX3.1/assets/48679574/011ac097-25a8-454a-840d-e22052cb17a1)](https://youtube.com/shorts/qoQlibyCR1c?si=ihqIfNyfjMD7pwjR)
 ## main improvement point
 - Hardware power poverty (jetson nano)
 - camera StereoVison accuracy 
