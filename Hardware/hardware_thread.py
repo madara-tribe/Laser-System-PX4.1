@@ -4,16 +4,18 @@ import time
 import Adafruit_PCA9685
 
 def x_angle2duty(angle):
+    plus = True if angle > 0 else False
     duty = int( float(angle) * 2.17 + 102 )
     # reverse
     # duty = 594 - duty
     print('x reset angle is', f' {angle}' 'duty is' f' {duty}')
-    return duty
+    return duty if plus==True else -duty
 
 def y_angle2duty(angle):
+    plus = True if angle > 0 else False
     duty = int(float(angle) * 2.17 + 102 )
     print('y reset angle is', f' {angle}' 'duty is' f' {duty}')
-    return duty
+    return duty if plus==True else -duty
 
 
 def hw_thread(q:Queue, opt):

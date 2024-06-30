@@ -7,8 +7,8 @@ def angle_convert(x, y, z):
     
     
 def real_cordinate(cx, cy, x, y, fpx, z):
-    real_x = (abs(x-cx)*z) / fpx
-    real_y = (abs(y-cy)*z) / fpx
+    real_x = (x-cx)*z / fpx
+    real_y = (y-cy)*z / fpx
     print("real_x, (abs(x-cx)*z), real_y, (abs(y-cy)*z)", real_x, (abs(x-cx)*z), real_y, (abs(y-cy)*z))
     return real_x, real_y
     

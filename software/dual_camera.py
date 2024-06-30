@@ -97,7 +97,7 @@ class DualCamera(object):
                             cv2.imshow(window_title, camera_images)
                         elif opt.pwm:
                             self.q.put(['x', self.real_x_angle])
-                            if self.real_y_angle > 5:
+                            if abs(self.real_y_angle) > 5:
                                 self.q.put(['y', self.real_y_angle])
                         # This also acts as
                         pred_time = np.round((time.time() - start), decimals=5)
