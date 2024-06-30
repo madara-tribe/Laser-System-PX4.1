@@ -50,7 +50,7 @@ $ python3 main.py --pwm
 
 <b>YOUTUBE MOVIE LINK</b>
 
-[![PX4.1 X-AXIS](![sddefault](https://github.com/madara-tribe/Laser-System-PX4.1/assets/48679574/1627af82-5892-49d7-b41f-853988a092ca))](https://youtu.be/QchYIQ16owU)
+[![PX4.1 X-AXIS](https://github.com/madara-tribe/Laser-System-PX4.1/assets/48679574/1627af82-5892-49d7-b41f-853988a092ca)](https://youtu.be/QchYIQ16owU)
 ## main improvement point
 - Hardware power poverty (jetson nano)
 - camera StereoVison accuracy 
