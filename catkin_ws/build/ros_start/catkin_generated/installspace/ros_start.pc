@@ -1,0 +1,8 @@
+prefix=/home/hagi/Downloads/catkin_ws/install
+
+Name: ros_start
+Description: Description of ros_start
+Version: 0.0.0
+Cflags: -I${prefix}/include
+Libs: -L${prefix}/lib 
+Requires: 
